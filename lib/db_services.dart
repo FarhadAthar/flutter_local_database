@@ -24,4 +24,24 @@ class DataBaseService {
     var rowNo = await db.insert(Employee.tableName, employee.toMap());
     return rowNo > 0;
   }
+
+  Future<bool> updateEmployee(Employee employee) async {
+    final db = await createDatabase();
+    var rowNo = await db.update(Employee.tableName, employee.toMap(),
+        where: '${Employee.colID} = ?', whereArgs: [employee.eId]);
+    return rowNo > 0;
+  }
+
+  Future<bool> deleteEmployee(Employee employee) async {
+    final db = await createDatabase();
+    var rowNo = await db.delete(Employee.tableName,
+        where: '${Employee.colID} = ?', whereArgs: [employee.eId]);
+    return rowNo > 0;
+  }
+
+  Future<List<Employee>> getAllEmployees() async {
+    final db = await createDatabase();
+    var rows = await db.rawQuery('SELECT * FROM ${Employee.tableName}');
+    return rows.map((e) => Employee.fromMap(e)).toList();
+  }
 }
